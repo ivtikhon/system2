@@ -1,0 +1,24 @@
+(define (problem system2)
+    (:domain system2)
+    (:objects
+        web_o - webapp_object
+        s_api - system2_api
+        s_app - system2_app
+    )
+    (:htn 
+        :parameters ()
+        :ordered-subtasks (and
+            (t1 (t_develop_app s_app))
+        )
+    )
+    (:init
+        (not (web_app_object_created web_o))
+        (not (app_developed s_app))
+        (not (api_developed s_api))
+        (not (api_get_tasks_developed s_api))
+    )
+    (:goal (and
+        (app_developed s_app)
+        )
+    )
+)

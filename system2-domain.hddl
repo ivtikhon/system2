@@ -31,8 +31,8 @@
             (not(app_developed ?app))
         )
         :ordered-subtasks(and
-            (t_develop_api ?api)
-            (a_conclude_app_development ?app)
+            (t1 (t_develop_api ?api))
+            (t2 (a_conclude_app_development ?app))
         )
     )
     (:method m_develop_api
@@ -43,8 +43,8 @@
             (web_app_object_created ?wo)
         )
         :ordered-subtasks(and
-            (t_develop_api_get_tasks ?api ?wo)
-            (a_conclude_api_development ?api)
+            (t1 (t_develop_api_get_tasks ?api ?wo))
+            (t2 (a_conclude_api_development ?api))
         )
     )
     (:method m_develop_api_get_tasks
@@ -55,7 +55,7 @@
             (web_app_object_created ?wo)
         )
         :ordered-subtasks(and
-            (a_develop_api_get_tasks ?api ?wo)
+            (t1 (a_develop_api_get_tasks ?api ?wo))
         )
     )
 
