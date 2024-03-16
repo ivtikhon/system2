@@ -9,6 +9,7 @@
         (web_app_object_created ?wo - webapp_object)
         (api_developed ?api - system2_api)
         (api_get_tasks_developed ?api - system2_api)
+        (app_developed ?app - system2_app)
     )
     
     ; tasks
@@ -23,6 +24,17 @@
     )
 
     ; methods
+    (:method m_develop_app
+        :parameters (?app - system2_app ?api - system2_api)
+        :task (t_develop_app ?app)
+        :precondition (and
+            (not(app_developed ?app))
+        )
+        :ordered-subtasks(and
+            (t_develop_api ?api)
+            (a_conclude_app_development ?app)
+        )
+    )
     (:method m_develop_api
         :parameters (?api - system2_api ?wo - webapp_object)
         :task (t_develop_api ?api)
@@ -64,5 +76,10 @@
         :parameters (?api - system2_api)
         :precondition ()
         :effect (api_developed ?api)
+    )
+    (:action a_conclude_app_development
+        :parameters (?app - system2_app)
+        :precondition ()
+        :effect (app_developed ?app)
     )
 )
