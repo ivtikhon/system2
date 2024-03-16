@@ -1,0 +1,68 @@
+(define (domain system2)
+    (:requirements :hierarchy :typing)
+    (:types 
+        webapp_object
+        system2_api
+        system2_app
+    )
+    (:predicates
+        (web_app_object_created ?wo - webapp_object)
+        (api_developed ?api - system2_api)
+        (api_get_tasks_developed ?api - system2_api)
+    )
+    
+    ; tasks
+    (:task t_develop_app
+        :parameters (?app - system2_app)
+    )
+    (:task t_develop_api
+        :parameters (?api - system2_api)
+    )
+    (:task t_develop_api_get_tasks
+        :parameters (?api - system2_api ?wo - webapp_object)
+    )
+
+    ; methods
+    (:method m_develop_api
+        :parameters (?api - system2_api ?wo - webapp_object)
+        :task (t_develop_api ?api)
+        :precondition (and
+            (not(api_developed ?api))
+            (web_app_object_created ?wo)
+        )
+        :ordered-subtasks(and
+            (t_develop_api_get_tasks ?api ?wo)
+            (a_conclude_api_development ?api)
+        )
+    )
+    (:method m_develop_api_get_tasks
+        :parameters (?api - system2_api ?wo - webapp_object)
+        :task (t_develop_api_get_tasks ?api ?wo)
+        :precondition (
+            (not(api_get_tasks_developed ?api))
+            (web_app_object_created ?wo)
+        )
+        :ordered-subtasks(and
+            (a_develop_api_get_tasks ?api ?wo)
+        )
+    )
+
+    ; actions
+    (:action a_create_web_app_object
+        :parameters (?wo - webapp_object)
+        :precondition (not(web_app_object_created ?wo))
+        :effect (web_app_object_created ?wo)
+    )
+    (:action a_develop_api_get_tasks
+        :parameters (?api - system2_api ?wo - webapp_object)
+        :precondition (and
+            (not(api_get_tasks_developed ?api))
+            (web_app_object_created ?wo)
+        )
+    )
+    (:action a_conclude_api_development
+        :parameters (?api - system2_api)
+        :precondition ()
+        :effect (api_developed ?api)
+    )
+)
