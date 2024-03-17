@@ -12,7 +12,7 @@
         )
     )
     (:init
-        (web_app_object_created web_o)
+        (not (web_app_object_created web_o))
     )
     (:goal (and
         (app_developed s_app)

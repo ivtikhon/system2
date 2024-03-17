@@ -40,11 +40,11 @@
         :task (t_develop_api ?api)
         :precondition (and
             (not(api_developed ?api))
-            (web_app_object_created ?wo)
         )
         :ordered-subtasks(and
-            (t1 (t_develop_api_get_tasks ?api ?wo))
-            (t2 (a_conclude_api_development ?api))
+            (t1 (a_create_web_app_object ?wo))
+            (t2 (t_develop_api_get_tasks ?api ?wo))
+            (t3 (a_conclude_api_development ?api))
         )
     )
     (:method m_develop_api_get_tasks
