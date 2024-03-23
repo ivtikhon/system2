@@ -2,6 +2,7 @@
     (:domain system2)
     (:objects
         web_o - webapp_object
+        jdb_o - jsondb_object
         s_api - system2_api
         s_app - system2_app
     )
@@ -13,6 +14,7 @@
     )
     (:init
         (not (web_app_object_created web_o))
+        (not (json_db_object_created jdb_o))
     )
     (:goal (and
         (app_developed s_app)
