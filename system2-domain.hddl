@@ -3,6 +3,8 @@
     (:types 
         webapp_object
         jsondb_object
+        task_struct
+        task_object
         system2_api
         system2_app
     )
@@ -12,6 +14,8 @@
         (api_developed ?api - system2_api)
         (api_get_tasks_developed ?api - system2_api)
         (app_developed ?app - system2_app)
+        (task_data_struct_developed ?ts - task_struct)
+        (api_create_task_developed ?api - system2_api)
     )
     
     ; tasks
@@ -22,7 +26,13 @@
         :parameters (?api - system2_api)
     )
     (:task t_develop_api_get_tasks
-        :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object)
+        :parameters (?api - system2_api)
+    )
+    (:task t_develop_api_create_task
+        :parameters (?api - system2_api)
+    )
+    (:task t_develop_api_decompose_task
+        :parameters (?api - system2_api)
     )
 
     ; methods
@@ -38,7 +48,7 @@
         )
     )
     (:method m_develop_api
-        :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object)
+        :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object ?ts - task_struct)
         :task (t_develop_api ?api)
         :precondition (and
             (not(api_developed ?api))
@@ -46,13 +56,15 @@
         :ordered-subtasks(and
             (t1 (a_create_web_app_object ?wo))
             (t2 (a_create_json_db_object ?jo))
-            (t3 (t_develop_api_get_tasks ?api ?wo ?jo))
-            (t4 (a_conclude_api_development ?api))
+            (t3 (a_develop_task_data_structure ?ts))
+            (t4 (t_develop_api_get_tasks ?api))
+            (t5 (t_develop_api_create_task ?api))
+            (t6 (a_conclude_api_development ?api))
         )
     )
     (:method m_develop_api_get_tasks
         :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object)
-        :task (t_develop_api_get_tasks ?api ?wo ?jo)
+        :task (t_develop_api_get_tasks ?api)
         :precondition (and
             (not(api_get_tasks_developed ?api))
             (web_app_object_created ?wo)
@@ -60,6 +72,19 @@
         )
         :ordered-subtasks(and
             (t1 (a_develop_api_get_tasks ?api ?wo ?jo))
+        )
+    )
+    (:method m_develop_api_create_task
+        :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object ?ts - task_struct)
+        :task (t_develop_api_create_task ?api)
+        :precondition (and
+            (not(api_create_task_developed ?api))
+            (web_app_object_created ?wo)
+            (json_db_object_created ?jo)
+            (task_data_struct_developed ?ts)
+        )
+        :ordered-subtasks(and
+            (t1 (a_develop_api_create_task ?api ?wo ?jo ?ts))
         )
     )
 
@@ -92,5 +117,20 @@
         :parameters (?app - system2_app)
         :precondition ()
         :effect (app_developed ?app)
+    )
+    (:action a_develop_api_create_task
+        :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object ?ts - task_struct)
+        :precondition (and
+            (not(api_create_task_developed ?api))
+            (web_app_object_created ?wo)
+            (json_db_object_created ?jo)
+            (task_data_struct_developed ?ts)
+        )
+        :effect(api_create_task_developed ?api)
+    )
+    (:action a_develop_task_data_structure
+        :parameters (?ts - task_struct)
+        :precondition (not(task_data_struct_developed ?ts))
+        :effect(task_data_struct_developed ?ts)
     )
 )

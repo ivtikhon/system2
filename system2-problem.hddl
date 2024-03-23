@@ -5,6 +5,7 @@
         jdb_o - jsondb_object
         s_api - system2_api
         s_app - system2_app
+        task_ds - task_struct
     )
     (:htn 
         :parameters ()
@@ -15,6 +16,7 @@
     (:init
         (not (web_app_object_created web_o))
         (not (json_db_object_created jdb_o))
+        (not (task_data_struct_developed task_ds))
     )
     (:goal (and
         (app_developed s_app)
