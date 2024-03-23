@@ -2,11 +2,13 @@
     (:requirements :hierarchy :typing)
     (:types 
         webapp_object
+        jsondb_object
         system2_api
         system2_app
     )
     (:predicates
         (web_app_object_created ?wo - webapp_object)
+        (json_db_object_created ?jo - jsondb_object)
         (api_developed ?api - system2_api)
         (api_get_tasks_developed ?api - system2_api)
         (app_developed ?app - system2_app)
@@ -20,7 +22,7 @@
         :parameters (?api - system2_api)
     )
     (:task t_develop_api_get_tasks
-        :parameters (?api - system2_api ?wo - webapp_object)
+        :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object)
     )
 
     ; methods
@@ -36,23 +38,25 @@
         )
     )
     (:method m_develop_api
-        :parameters (?api - system2_api ?wo - webapp_object)
+        :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object)
         :task (t_develop_api ?api)
         :precondition (and
             (not(api_developed ?api))
         )
         :ordered-subtasks(and
             (t1 (a_create_web_app_object ?wo))
-            (t2 (t_develop_api_get_tasks ?api ?wo))
-            (t3 (a_conclude_api_development ?api))
+            (t2 (a_create_json_db_object ?jo))
+            (t3 (t_develop_api_get_tasks ?api ?wo))
+            (t4 (a_conclude_api_development ?api))
         )
     )
     (:method m_develop_api_get_tasks
-        :parameters (?api - system2_api ?wo - webapp_object)
+        :parameters (?api - system2_api ?wo - webapp_object ?jo - jsondb_object)
         :task (t_develop_api_get_tasks ?api ?wo)
         :precondition (and
             (not(api_get_tasks_developed ?api))
             (web_app_object_created ?wo)
+            (json_db_object_created ?jo)
         )
         :ordered-subtasks(and
             (t1 (a_develop_api_get_tasks ?api ?wo))
@@ -64,6 +68,11 @@
         :parameters (?wo - webapp_object)
         :precondition (not(web_app_object_created ?wo))
         :effect (web_app_object_created ?wo)
+    )
+    (:action a_create_json_db_object
+        :parameters (?jo - jsondb_object)
+        :precondition (not(json_db_object_created ?jo))
+        :effect (json_db_object_created ?jo)
     )
     (:action a_develop_api_get_tasks
         :parameters (?api - system2_api ?wo - webapp_object)
